@@ -17,5 +17,5 @@ Gem::Specification.new do |s|
   s.bindir = 'bin'
 
   s.add_runtime_dependency 'event_store-entity_projection'
-  s.add_runtime_dependency 'event_store-consumer'
+  s.add_runtime_dependency 'event_store-consumer', '>= 0.3.0.0.pre1'
 end

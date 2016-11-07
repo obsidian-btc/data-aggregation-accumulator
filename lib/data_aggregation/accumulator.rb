@@ -6,3 +6,4 @@ module DataAggregation
 end
 
 require 'data_aggregation/accumulator/message'
+require 'data_aggregation/accumulator/position_store'

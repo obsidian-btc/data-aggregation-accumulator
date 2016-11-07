@@ -1,3 +1,2 @@
-module DataAggregation::Accumulator
-  Controls = Module.new
-end
+require 'data_aggregation/accumulator/controls/message'
+require 'data_aggregation/accumulator/controls/source_stream_version'

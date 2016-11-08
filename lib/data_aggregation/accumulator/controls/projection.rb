@@ -1,11 +1,5 @@
 module DataAggregation::Accumulator::Controls
   module Projection
-    def self.example
-      message = Message.example
-
-      Example.new message
-    end
-
     class Example
       include EventStore::EntityProjection
       include Messages::Input

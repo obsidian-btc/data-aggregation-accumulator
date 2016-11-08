@@ -3,16 +3,16 @@ require_relative '../automated_init'
 context "Dispatcher Writes First Message to Output Stream" do
   dispatcher = Dispatcher.new(
     Controls::Projection::Example,
-    Controls::Message::SomeMessage,
+    Controls::Messages::Output::SomeMessage,
     Controls::StreamName::Output::Category.example
   )
 
-  input_message = Controls::InputMessage.example
+  input_message = Controls::Messages::Input.example
 
   dispatcher.dispatch input_message
 
   test "Output message is written" do
-    output_message = Controls::Message.example
+    output_message = Controls::Messages::Output.example
 
     assert dispatcher.writer do
       written? do |message|

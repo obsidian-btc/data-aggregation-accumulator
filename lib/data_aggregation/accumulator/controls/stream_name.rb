@@ -1,19 +1,28 @@
 module DataAggregation::Accumulator
   module Controls
     module StreamName
+      def self.get(category)
+        stream_id = Controls::ID.example
+
+        EventStore::Messaging::StreamName.stream_name stream_id, category
+      end
+
+      def self.category(category, random: nil)
+        random = SecureRandom.hex 7 if random == true
+
+        "#{category}#{random}"
+      end
+
       module Input
         def self.example(random: nil)
           category = Category.example random: random
-          stream_id = Controls::ID.example
 
-          EventStore::Messaging::StreamName.stream_name stream_id, category
+          StreamName.get category
         end
 
         module Category
           def self.example(random: nil)
-            random = SecureRandom.hex 7 if random == true
-
-            "someStream#{random}"
+            StreamName.category 'someStream', random: random
           end
         end
       end
@@ -21,16 +30,13 @@ module DataAggregation::Accumulator
       module Output
         def self.example(random: nil)
           category = Category.example random: random
-          stream_id = Controls::ID.example
 
-          EventStore::Messaging::StreamName.stream_name stream_id, category
+          StreamName.get category
         end
 
         module Category
           def self.example(random: nil)
-            random = SecureRandom.hex 7 if random == true
-
-            "someAccumulator#{random}"
+            StreamName.category 'someAccumulator', random: random
           end
         end
       end

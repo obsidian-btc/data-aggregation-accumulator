@@ -3,14 +3,14 @@ require_relative '../automated_init'
 context "Dispatcher Writes Message to Output Stream, Cache Miss" do
   version = 11
   output_stream_name = Controls::Writer::Output.write version: version.pred
-  input_message = Controls::InputMessage.example version
-  output_message = Controls::Message.example version
+  input_message = Controls::Messages::Input.example version
+  output_message = Controls::Messages::Output.example version
 
   category = EventStore::Messaging::StreamName.get_category output_stream_name
 
   dispatcher = Dispatcher.new(
     Controls::Projection::Example,
-    Controls::Message::SomeMessage,
+    Controls::Messages::Output::SomeMessage,
     category
   )
 

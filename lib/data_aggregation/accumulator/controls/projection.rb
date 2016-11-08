@@ -8,7 +8,7 @@ module DataAggregation::Accumulator::Controls
 
     class Example
       include EventStore::EntityProjection
-      include InputMessage
+      include Messages::Input
 
       apply SomeInputMessage do |input_message|
         entity.result = entity.previous_result + input_message.number

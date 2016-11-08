@@ -1,7 +1,7 @@
 require_relative '../automated_init'
 
 context "Message is Instantiated" do
-  message = Controls::Message::SomeMessage.new
+  message = Controls::Messages::Output::SomeMessage.new
 
   test "Instances are event store messages" do
     assert message.is_a?(EventStore::Messaging::Message)

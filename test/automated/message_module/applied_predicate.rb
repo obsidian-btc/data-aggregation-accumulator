@@ -1,7 +1,7 @@
 require_relative '../automated_init'
 
 context "Message Module Applied Predicate" do
-  message = Controls::Message.example
+  message = Controls::Messages::Output.example
   message.source_stream_version = Controls::SourceStreamVersion.example
 
   context "Specified version precedes source stream version" do

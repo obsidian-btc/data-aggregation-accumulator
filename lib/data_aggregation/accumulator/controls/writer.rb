@@ -7,7 +7,7 @@ module DataAggregation::Accumulator
 
           stream_name = StreamName::Output.example random: true
 
-          event_batch = (0..version).map do |event_version|
+          event_batch = (0..version).to_a.map do |event_version|
             Message.example event_version
           end
 

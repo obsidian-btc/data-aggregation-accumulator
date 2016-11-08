@@ -3,15 +3,15 @@ module DataAggregation::Accumulator
     module Messages
       module Input
         module Other
+          def self.example(i=nil, source_event_uri: nil)
+            source_event_uri ||= SourceEventURI.example i
+
+            message = SomeInputMessage.new
+            message.metadata.source_event_uri = source_event_uri
+            message
+          end
+
           module EventData
-            def self.example(i=nil, source_event_uri: nil)
-              source_event_uri ||= SourceEventURI.example i
-
-              message = SomeInputMessage.new
-              message.metadata.source_event_uri = source_event_uri
-              message
-            end
-
             def self.example
               type = Type.example
 

@@ -1,7 +1,7 @@
 require_relative '../automated_init'
 
 context "Dispatcher Stores Output Message in Entity Cache" do
-  input_message = Controls::Messages::Input.example
+  input_message = Controls::Messages::Input::Current.example
 
   dispatcher = Controls::Dispatcher.example
 

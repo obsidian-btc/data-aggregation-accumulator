@@ -23,6 +23,10 @@ module DataAggregation::Accumulator
 
       message, preceding_version = get_preceding_message stream_id
 
+      if message.applied? stream_position
+        return
+      end
+
       message.source_stream_version = stream_position
       message.advance
 

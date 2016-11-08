@@ -6,7 +6,7 @@ module DataAggregation::Accumulator
           def self.example(i=nil, source_event_uri: nil)
             source_event_uri ||= SourceEventURI.example i
 
-            message = SomeInputMessage.new
+            message = OtherInputMessage.new
             message.metadata.source_event_uri = source_event_uri
             message
           end

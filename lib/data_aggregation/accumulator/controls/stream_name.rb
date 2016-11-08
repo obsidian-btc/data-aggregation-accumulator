@@ -1,8 +1,8 @@
 module DataAggregation::Accumulator
   module Controls
     module StreamName
-      def self.get(category)
-        stream_id = Controls::ID.example
+      def self.get(category, stream_id=nil)
+        stream_id ||= Controls::ID.example
 
         EventStore::Messaging::StreamName.stream_name stream_id, category
       end
@@ -28,10 +28,10 @@ module DataAggregation::Accumulator
       end
 
       module Output
-        def self.example(random: nil)
+        def self.example(stream_id: nil, random: nil)
           category = Category.example random: random
 
-          StreamName.get category
+          StreamName.get category, stream_id
         end
 
         module Category

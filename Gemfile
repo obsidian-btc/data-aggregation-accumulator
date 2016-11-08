@@ -14,6 +14,10 @@ source 'https://gem.fury.io/eventide' do
   gem 'telemetry'
 end
 
+source 'https://gem.fury.io/obsidian' do
+  gem 'fixtures-expect_message', :group => :development
+end
+
 group :development do
   gem 'pry'
   gem 'pry-doc'

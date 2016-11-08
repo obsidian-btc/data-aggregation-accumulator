@@ -4,7 +4,10 @@ module DataAggregation::Accumulator
       def self.example(category=nil, cache: nil)
         cache = true if cache.nil?
 
-        dispatcher = Example.new
+        dispatcher = Example.build
+
+        SubstAttr::Substitute.(:cache, dispatcher)
+        SubstAttr::Substitute.(:writer, dispatcher)
 
         dispatcher.category_name = category if category
 

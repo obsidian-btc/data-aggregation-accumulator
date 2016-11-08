@@ -15,6 +15,8 @@ module DataAggregation::Accumulator
 
         dependency :cache, EntityCache
         dependency :writer, EventStore::Messaging::Writer
+
+        initializer :projection_class, :entity_class
       end
     end
 
@@ -116,7 +118,7 @@ module DataAggregation::Accumulator
 
     module Build
       def build
-        instance = new
+        instance = new projection_class, entity_class
         EntityCache.configure instance, projection_class, attr_name: :cache
         EventStore::Messaging::Writer.configure instance
         instance

@@ -1,6 +1,29 @@
 module DataAggregation::Accumulator
   module Controls
     module Writer
+      module Input
+        def self.write(category=nil, stream_id: nil, output_version: nil)
+          output_version ||= Version::Output.example
+          category ||= StreamName::Input::Category.example random: true
+          stream_id ||= ID.example
+
+          stream_name = EventStore::Messaging::StreamName.stream_name stream_id, category
+
+          writer = EventStore::Messaging::Writer.build
+
+          (0..output_version).each do |i|
+            batch = [
+              Messages::Input::Other.example(i),
+              Messages::Input.example(i)
+            ]
+
+            writer.write batch, stream_name
+          end
+
+          stream_name
+        end
+      end
+
       module Output
         def self.write(version: nil)
           version ||= Version::Output::Preceding.example

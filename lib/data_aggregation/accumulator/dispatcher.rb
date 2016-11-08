@@ -1,6 +1,7 @@
 module DataAggregation::Accumulator
   class Dispatcher
     include EventStore::Messaging::StreamName
+    include Telemetry::Logger::Dependency
 
     dependency :cache, EntityCache
     dependency :writer, EventStore::Messaging::Writer
@@ -19,11 +20,14 @@ module DataAggregation::Accumulator
     end
 
     def dispatch(input_message, _=nil)
+      logger.trace "Dispatching input message (InputMessageType: #{input_message.message_type})"
+
       stream_id, stream_position = parse_source_event_uri input_message.metadata
 
       message, preceding_version = get_preceding_message stream_id
 
       if message.applied? stream_position
+        logger.debug "Input message already applied; skipped (InputMessageType: #{input_message.message_type}, InputStreamPosition: #{stream_position}, MessageSourceStreamVersion: #{message.source_stream_version})"
         return
       end
 
@@ -40,27 +44,36 @@ module DataAggregation::Accumulator
       next_version = preceding_version == :no_stream ? 0 : preceding_version.next
       cache.put stream_id, message, next_version
 
+      logger.info "Next message written (InputMessageType: #{input_message.message_type}, InputStreamPosition: #{stream_position}, OutputMessageType: #{message.message_type}, OutputStreamName: #{output_stream_name}, Version: #{next_version})"
+
       message
     end
 
     def get_preceding_message(stream_id)
+      logger.trace "Getting preceding output message (StreamID: #{stream_id})"
+
       cache_record = cache.get stream_id
 
       if cache_record
         preceding_message = cache_record.entity
         preceding_version = cache_record.version
-      else
-        reader = build_reader stream_id
 
-        reader.each do |event_data|
-          preceding_message = build_output_message event_data
-          preceding_version = event_data.number
-          break
-        end
+        logger.debug "Preceding message found in cache (StreamID: #{stream_id}, CachedVersion: #{preceding_version})"
+        return preceding_message, preceding_version
+      end
+
+      reader = build_reader stream_id
+
+      reader.each do |event_data|
+        preceding_message = build_output_message event_data
+        preceding_version = event_data.number
+        break
       end
 
       preceding_version ||= :no_stream
       preceding_message ||= entity_class.new
+
+      logger.debug "Preceding message read from output stream (StreamID: #{stream_id}, PrecedingVersion: #{preceding_version.inspect})"
 
       return preceding_message, preceding_version
     end
@@ -83,6 +96,8 @@ module DataAggregation::Accumulator
     end
 
     def parse_source_event_uri(metadata)
+      logger.trace "Parsing source event URI (SourceEventURI: #{metadata.source_event_uri.inspect})"
+
       source_event_uri = URI.parse metadata.source_event_uri
 
       *, stream_name, stream_position = source_event_uri.path.split '/'
@@ -90,6 +105,8 @@ module DataAggregation::Accumulator
       stream_position = stream_position.to_i
 
       stream_id = EventStore::Messaging::StreamName.get_id stream_name
+
+      logger.debug "Parsed source event URI (SourceEventURI: #{metadata.source_event_uri.inspect}, StreamID: #{stream_id.inspect}, StreamPosition: #{stream_position})"
 
       return stream_id, stream_position
     end

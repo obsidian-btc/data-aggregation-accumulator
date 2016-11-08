@@ -1,6 +1,7 @@
 require 'entity_cache'
 require 'event_store/consumer'
 require 'event_store/entity_projection'
+require 'telemetry/logger'
 
 module DataAggregation
   Accumulator = Module.new

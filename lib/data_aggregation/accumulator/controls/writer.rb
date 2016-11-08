@@ -3,7 +3,7 @@ module DataAggregation::Accumulator
     module Writer
       module Output
         def self.write(version: nil)
-          version ||= 0
+          version ||= Version::Output::Preceding.example
 
           stream_name = StreamName::Output.example random: true
 

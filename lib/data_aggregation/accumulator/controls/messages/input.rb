@@ -9,6 +9,20 @@ module DataAggregation::Accumulator
           message
         end
 
+        module Initial
+          def self.example
+            Input.example 0
+          end
+        end
+
+        module Current
+          def self.example
+            i = Version::Output::Current.example
+
+            Input.example i
+          end
+        end
+
         module Number
           def self.example(i=nil)
             i || 0

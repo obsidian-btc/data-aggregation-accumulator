@@ -32,6 +32,13 @@ module DataAggregation::Accumulator
       message = nil
       version = :no_stream
 
+      cache_record = cache.get stream_id
+
+      if cache_record
+        message = cache_record.entity
+        version = cache_record.version
+      end
+
       reader = EventStore::Client::HTTP::Reader.build(
         output_stream_name,
         slice_size: 1,
@@ -58,6 +65,8 @@ module DataAggregation::Accumulator
 
       next_version = version == :no_stream ? 0 : version.next
       cache.put stream_id, message, next_version
+
+      message
     end
   end
 end

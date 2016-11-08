@@ -1,6 +1,7 @@
 require 'event_store/messaging/controls'
 require 'identifier/uuid/controls'
 
+require 'data_aggregation/accumulator/controls/dispatcher'
 require 'data_aggregation/accumulator/controls/id'
 require 'data_aggregation/accumulator/controls/messages/output'
 require 'data_aggregation/accumulator/controls/messages/input'
@@ -10,4 +11,5 @@ require 'data_aggregation/accumulator/controls/messages/input/source_event_uri'
 require 'data_aggregation/accumulator/controls/projection'
 require 'data_aggregation/accumulator/controls/source_stream_version'
 require 'data_aggregation/accumulator/controls/stream_name'
+require 'data_aggregation/accumulator/controls/version'
 require 'data_aggregation/accumulator/controls/writer'

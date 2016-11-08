@@ -15,6 +15,30 @@ module DataAggregation::Accumulator
           message
         end
 
+        module Initial
+          def self.example
+            version = 0
+
+            Output.example version
+          end
+        end
+
+        module Preceding
+          def self.example
+            version = Version::Output::Preceding.example
+
+            Output.example version
+          end
+        end
+
+        module Current
+          def self.example
+            version = Version::Output.example
+
+            Output.example version
+          end
+        end
+
         module Result
           def self.example(i=nil)
             i ||= 0

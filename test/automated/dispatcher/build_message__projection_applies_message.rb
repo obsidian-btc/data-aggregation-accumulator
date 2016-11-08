@@ -1,11 +1,7 @@
 require_relative '../automated_init'
 
 context "Dispatcher Builds Message, Projection Applies Message" do
-  dispatcher = Dispatcher.new(
-    Controls::Projection::Example,
-    Controls::Messages::Output::SomeMessage,
-    'someCategory'
-  )
+  dispatcher = Controls::Dispatcher.example
 
   event_data = Controls::Messages::Input::EventData.example
 

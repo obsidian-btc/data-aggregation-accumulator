@@ -3,26 +3,32 @@ module DataAggregation::Accumulator
     module Dispatcher
       def self.example(category=nil, cache: nil)
         cache = true if cache.nil?
-        category ||= StreamName::Output::Category.example
 
-        projection_class = Controls::Projection::Example
-        output_message_class = Controls::Messages::Output::SomeMessage
+        dispatcher = Example.new
 
-        dispatcher = DataAggregation::Accumulator::Dispatcher.new(
-          projection_class,
-          output_message_class,
-          category
-        )
+        dispatcher.category_name = category if category
 
-        if cache
-          id = Controls::ID.example
-          output_message = Controls::Messages::Output::Preceding.example
-          cache_version = Controls::Version::Output::Preceding.example
+        Cache.configure dispatcher if cache
+
+        dispatcher
+      end
+
+      module Cache
+        def self.configure(dispatcher)
+          id = ID.example
+          output_message = Messages::Output::Preceding.example
+          cache_version = Version::Output::Preceding.example
 
           dispatcher.cache.add id, output_message, cache_version
         end
+      end
 
-        dispatcher
+      class Example
+        include DataAggregation::Accumulator::Dispatcher
+
+        projection Controls::Projection::Example
+        entity Controls::Messages::Output::SomeMessage
+        category Controls::StreamName::Output::Category.example
       end
     end
   end

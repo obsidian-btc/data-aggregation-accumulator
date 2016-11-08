@@ -1,18 +1,21 @@
 module DataAggregation::Accumulator
-  class Dispatcher
-    include EventStore::Messaging::StreamName
-    include Telemetry::Logger::Dependency
+  module Dispatcher
+    def self.included(cls)
+      cls.class_exec do
+        include EventStore::Messaging::StreamName
+        include Telemetry::Logger::Dependency
 
-    dependency :cache, EntityCache
-    dependency :writer, EventStore::Messaging::Writer
+        extend Build
+        extend ProjectionMacro
+        extend EntityMacro
 
-    initializer :projection_class, :entity_class, :category_name
+        configure :dispatcher
 
-    def self.build(projection_class, entity_class, output_category)
-      instance = new projection_class, entity_class, output_category
-      EntityCache.configure instance, projection_class, attr_name: :cache
-      EventStore::Messaging::Writer.configure instance
-      instance
+        attr_writer :category_name
+
+        dependency :cache, EntityCache
+        dependency :writer, EventStore::Messaging::Writer
+      end
     end
 
     def build_message(event_data)
@@ -109,6 +112,41 @@ module DataAggregation::Accumulator
       logger.debug "Parsed source event URI (SourceEventURI: #{metadata.source_event_uri.inspect}, StreamID: #{stream_id.inspect}, StreamPosition: #{stream_position})"
 
       return stream_id, stream_position
+    end
+
+    module Build
+      def build
+        instance = new
+        EntityCache.configure instance, projection_class, attr_name: :cache
+        EventStore::Messaging::Writer.configure instance
+        instance
+      end
+    end
+
+    module ProjectionMacro
+      def projection_macro(projection_class)
+        define_singleton_method :projection_class do
+          projection_class
+        end
+
+        define_method :projection_class do
+          self.class.projection_class
+        end
+      end
+      alias_method :projection, :projection_macro
+    end
+
+    module EntityMacro
+      def entity_macro(entity_class)
+        define_singleton_method :entity_class do
+          entity_class
+        end
+
+        define_method :entity_class do
+          self.class.entity_class
+        end
+      end
+      alias_method :entity, :entity_macro
     end
   end
 end

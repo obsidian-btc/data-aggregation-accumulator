@@ -24,6 +24,12 @@ module DataAggregation::Accumulator
           def self.example(random: nil)
             StreamName.category 'someStream', random: random
           end
+
+          def self.event_store
+            category = self.example
+
+            EventStore::Messaging::StreamName.category_stream_name category
+          end
         end
       end
 

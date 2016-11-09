@@ -7,9 +7,9 @@ context "Accumulator Module Entity Macro" do
     entity Controls::Messages::Output::SomeMessage
   end
 
-  test "Dispatcher is configured to use specified entity" do
+  test "Dispatcher is configured to use specified output class" do
     assert accumulator_class.dispatcher_class do
-      entity_class == Controls::Messages::Output::SomeMessage
+      output_class == Controls::Messages::Output::SomeMessage
     end
   end
 end

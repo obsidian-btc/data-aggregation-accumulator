@@ -26,7 +26,7 @@ module DataAggregation
 
     module EntityMacro
       def entity_macro(entity_class)
-        dispatcher_class.entity_macro entity_class
+        dispatcher_class.output_macro entity_class
       end
       alias_method :entity, :entity_macro
     end

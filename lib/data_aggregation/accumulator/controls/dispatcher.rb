@@ -30,7 +30,7 @@ module DataAggregation::Accumulator
         include DataAggregation::Accumulator::Dispatcher
 
         projection Controls::Projection::Example
-        entity Controls::Messages::Output::SomeMessage
+        output Controls::Messages::Output::SomeMessage
         category Controls::StreamName::Output::Category.example
       end
     end

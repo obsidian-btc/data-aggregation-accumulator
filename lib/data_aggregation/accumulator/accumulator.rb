@@ -26,7 +26,7 @@ module DataAggregation
 
     module OutputMessageMacro
       def output_message_macro(output_message_class)
-        dispatcher_class.output_macro output_message_class
+        dispatcher_class.output_message_macro output_message_class
       end
       alias_method :output_message, :output_message_macro
     end

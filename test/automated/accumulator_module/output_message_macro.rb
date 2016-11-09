@@ -7,9 +7,9 @@ context "Accumulator Module Output Message Macro" do
     output_message Controls::Messages::Output::SomeMessage
   end
 
-  test "Dispatcher is configured to use specified output class" do
+  test "Dispatcher is configured to use specified output message class" do
     assert accumulator_class.dispatcher_class do
-      output_class == Controls::Messages::Output::SomeMessage
+      output_message_class == Controls::Messages::Output::SomeMessage
     end
   end
 end

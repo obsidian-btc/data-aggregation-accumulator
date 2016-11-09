@@ -6,8 +6,8 @@ module DataAggregation::Accumulator
       end
     end
 
-    def output
-      @output ||= entity.tap &:advance
+    def output_message
+      @output_message ||= entity.tap &:advance
     end
   end
 end

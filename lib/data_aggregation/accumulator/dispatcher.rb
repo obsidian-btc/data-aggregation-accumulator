@@ -7,7 +7,7 @@ module DataAggregation::Accumulator
 
         extend Build
         extend ProjectionMacro
-        extend OutputMacro
+        extend OutputMessageMacro
 
         configure :dispatcher
 
@@ -73,7 +73,7 @@ module DataAggregation::Accumulator
       end
 
       preceding_version ||= :no_stream
-      preceding_message ||= output_class.new
+      preceding_message ||= output_message_class.new
 
       logger.debug "Preceding message read from output stream (StreamID: #{stream_id}, PrecedingVersion: #{preceding_version.inspect})"
 
@@ -83,7 +83,7 @@ module DataAggregation::Accumulator
     def build_output_message(event_data)
       EventStore::Messaging::Message::Import::EventData.(
         event_data,
-        output_class
+        output_message_class
       )
     end
 
@@ -135,17 +135,17 @@ module DataAggregation::Accumulator
       alias_method :projection, :projection_macro
     end
 
-    module OutputMacro
-      def output_macro(output_class)
-        define_singleton_method :output_class do
-          output_class
+    module OutputMessageMacro
+      def output_message_macro(output_message_class)
+        define_singleton_method :output_message_class do
+          output_message_class
         end
 
-        define_method :output_class do
-          self.class.output_class
+        define_method :output_message_class do
+          self.class.output_message_class
         end
       end
-      alias_method :output, :output_macro
+      alias_method :output_message, :output_message_macro
     end
   end
 end

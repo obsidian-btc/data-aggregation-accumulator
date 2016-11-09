@@ -6,7 +6,7 @@ module DataAggregation::Accumulator
         include Messages::Input
 
         apply SomeInputMessage do |input_message|
-          output.result = output.previous_result + input_message.number
+          output_message.result = output_message.previous_result + input_message.number
         end
       end
     end

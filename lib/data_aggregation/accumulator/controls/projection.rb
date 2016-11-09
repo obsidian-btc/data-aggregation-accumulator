@@ -2,11 +2,11 @@ module DataAggregation::Accumulator
   module Controls
     module Projection
       class Example
-        include EventStore::EntityProjection
+        include DataAggregation::Accumulator::Projection
         include Messages::Input
 
         apply SomeInputMessage do |input_message|
-          entity.result = entity.previous_result + input_message.number
+          output.result = output.previous_result + input_message.number
         end
       end
     end

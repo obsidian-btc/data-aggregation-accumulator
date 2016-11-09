@@ -35,7 +35,6 @@ module DataAggregation::Accumulator
       end
 
       message.source_stream_version = stream_position
-      message.advance
 
       output_stream_name = stream_name stream_id
 

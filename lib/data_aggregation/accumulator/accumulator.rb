@@ -7,7 +7,7 @@ module DataAggregation
         include EventStore::Consumer
 
         extend DispatcherClass
-        extend EntityMacro
+        extend OutputMessageMacro
         extend OutputCategoryMacro
         extend ProjectionMacro
 
@@ -24,11 +24,11 @@ module DataAggregation
       alias_method :messaging_dispatcher_class, :dispatcher_class
     end
 
-    module EntityMacro
-      def entity_macro(entity_class)
-        dispatcher_class.output_macro entity_class
+    module OutputMessageMacro
+      def output_message_macro(output_message_class)
+        dispatcher_class.output_macro output_message_class
       end
-      alias_method :entity, :entity_macro
+      alias_method :output_message, :output_message_macro
     end
 
     module OutputCategoryMacro

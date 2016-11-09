@@ -6,7 +6,7 @@ module DataAggregation::Accumulator
 
         category StreamName::Input::Category.example
         output_category StreamName::Output::Category.example
-        entity Messages::Output::SomeMessage
+        output_message Messages::Output::SomeMessage
         projection Projection::Example
       end
     end

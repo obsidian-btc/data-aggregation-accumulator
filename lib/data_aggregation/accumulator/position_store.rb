@@ -20,5 +20,8 @@ module DataAggregation::Accumulator
 
       :no_stream
     end
+
+    def put(_)
+    end
   end
 end

@@ -1,11 +1,13 @@
 require 'entity_cache'
 require 'event_store/consumer'
 require 'event_store/entity_projection'
-require 'telemetry/logger'
+require 'log'
 
 module DataAggregation
   Accumulator = Module.new
 end
+
+require 'data_aggregation/accumulator/log'
 
 require 'data_aggregation/accumulator/accumulator'
 require 'data_aggregation/accumulator/dispatcher'

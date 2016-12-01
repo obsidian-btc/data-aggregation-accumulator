@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency 'entity_cache'
   s.add_runtime_dependency 'event_store-entity_projection'
-  s.add_runtime_dependency 'event_store-consumer', '>= 0.3.0.0.pre1'
-  s.add_runtime_dependency 'fixtures-expect_message'
+  s.add_runtime_dependency 'event_store-consumer'
+
+  s.add_development_dependency 'fixtures-expect_message'
 end

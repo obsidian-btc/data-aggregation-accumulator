@@ -3,7 +3,7 @@ module DataAggregation::Accumulator
     def self.included(cls)
       cls.class_exec do
         include EventStore::Messaging::StreamName
-        include Telemetry::Logger::Dependency
+        include Log::Dependency
 
         extend Build
         extend ProjectionMacro

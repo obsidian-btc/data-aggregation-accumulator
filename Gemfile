@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 source 'https://gem.fury.io/eventide' do
-  gem 'entity_cache'
+  gem 'entity_cache', '~> 0.6.0'
   gem 'event_store-entity_projection'
   gem 'event_store-consumer'
 

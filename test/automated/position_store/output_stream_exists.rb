@@ -1,15 +1,22 @@
 require_relative '../automated_init'
 
 context "Position Store, Output Stream Exists" do
-  stream_name = Controls::Writer::Output.write version: 1
+  input_stream_name = Controls::StreamName::Input.example
 
-  position_store = PositionStore.build stream_name
+  output_stream_name = Controls::Writer::Output.write version: 1
+  output_category = EventStore::Messaging::StreamName.get_category output_stream_name
+
+  position_store = Controls::PositionStore::Example.new input_stream_name
+  position_store.category_name = output_category
+  position_store.configure
 
   context "Get position" do
     position = position_store.get
 
-    test "No stream is returned" do
-      assert position == 1
+    test "Global position stored on last output message is returned" do
+      control_position = Controls::Messages::Input::GlobalPosition.example 1
+
+      assert position == control_position
     end
   end
 end

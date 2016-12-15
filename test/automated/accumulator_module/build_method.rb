@@ -5,7 +5,7 @@ context "Accumulator Module Build Method" do
 
   test "Position store is configured" do
     assert accumulator.position_store do
-      instance_of? PositionStore
+      instance_of? Controls::Accumulator::Example::PositionStore
     end
   end
 

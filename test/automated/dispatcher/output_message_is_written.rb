@@ -1,9 +1,11 @@
 require_relative '../automated_init'
 
 context "Dispatcher Writes Output Message" do
+  input_message, input_event_data = Controls::Messages::Input::Current.pair
+
   dispatcher = Controls::Dispatcher.example
 
-  dispatcher.dispatch Controls::Messages::Input::Current.example
+  dispatcher.dispatch input_message, input_event_data
 
   test "Output message is written to output stream" do
     control_message = Controls::Messages::Output::Current.example

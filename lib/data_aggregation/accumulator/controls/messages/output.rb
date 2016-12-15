@@ -11,7 +11,8 @@ module DataAggregation::Accumulator
           message = SomeMessage.new
           message.result = result
           message.previous_result = previous_result
-          message.source_stream_version = SourceStreamVersion.example i
+          message.source_stream_version = Input::StreamPosition.example i
+          message.source_global_position = Input::GlobalPosition.example i
           message
         end
 
@@ -60,12 +61,6 @@ module DataAggregation::Accumulator
             else
               example i - 1
             end
-          end
-        end
-
-        module SourceStreamVersion
-          def self.example(i=nil)
-            Input::StreamPosition.example i
           end
         end
 

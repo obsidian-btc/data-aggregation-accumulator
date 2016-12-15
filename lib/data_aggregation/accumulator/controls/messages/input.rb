@@ -13,6 +13,19 @@ module DataAggregation::Accumulator
           def self.example
             Input.example 0
           end
+
+          def self.pair
+            message = self.example
+            event_data = EventData.example
+
+            return message, event_data
+          end
+
+          module EventData
+            def self.example
+              Input::EventData.example 0
+            end
+          end
         end
 
         module Current
@@ -20,6 +33,21 @@ module DataAggregation::Accumulator
             i = Version::Output::Current.example
 
             Input.example i
+          end
+
+          def self.pair
+            message = self.example
+            event_data = EventData.example
+
+            return message, event_data
+          end
+
+          module EventData
+            def self.example
+              i = Version::Output::Current.example
+
+              Input::EventData.example i
+            end
           end
         end
 
@@ -38,6 +66,14 @@ module DataAggregation::Accumulator
 
           def self.initial
             example
+          end
+        end
+
+        module GlobalPosition
+          def self.example(i=nil)
+            stream_position = StreamPosition.example i
+
+            "#{stream_position}#{stream_position}".to_i
           end
         end
 

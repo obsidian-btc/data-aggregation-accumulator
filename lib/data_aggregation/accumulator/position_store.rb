@@ -5,6 +5,8 @@ module DataAggregation::Accumulator
     dependency :reader, EventStore::Client::HTTP::Reader
 
     def configure
+      Log.configure self
+
       EventStore::Client::HTTP::Reader.configure(
         self,
         stream_name,
@@ -15,6 +17,7 @@ module DataAggregation::Accumulator
 
     def get
       reader.each do |event_data|
+        logger.info "-> #{event_data.position} (#{stream_name})"
         return event_data.position
       end
 

@@ -1,11 +1,11 @@
 require_relative '../automated_init'
 
 context "Dispatcher Writes Initial Message to Output Stream" do
-  input_message = Controls::Messages::Input::Initial.example
+  input_message, input_event_data = Controls::Messages::Input::Initial.pair
 
   dispatcher = Controls::Dispatcher.example cache: false
 
-  output_message = dispatcher.dispatch input_message
+  output_message = dispatcher.dispatch input_message, input_event_data
 
   test "Initial output message is written" do
     assert output_message == Controls::Messages::Output::Initial.example

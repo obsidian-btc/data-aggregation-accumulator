@@ -22,19 +22,21 @@ module DataAggregation::Accumulator
       projection_class.build_message event_data
     end
 
-    def dispatch(input_message, _=nil)
+    def dispatch(input_message, event_data)
       logger.trace "Dispatching input message (InputMessageType: #{input_message.message_type})"
 
       stream_id, stream_position = parse_source_event_uri input_message.metadata
+      global_position = event_data.position
 
       message, preceding_version = get_preceding_message stream_id
 
       if message.applied? stream_position
-        logger.debug "Input message already applied; skipped (InputMessageType: #{input_message.message_type}, InputStreamPosition: #{stream_position}, MessageSourceStreamVersion: #{message.source_stream_version})"
+        logger.debug "Input message already applied; skipped (InputMessageType: #{input_message.message_type}, InputStreamPosition: #{stream_position}, MessageSourceStreamVersion: #{message.source_stream_version}, GlobalPosition: #{global_position})"
         return
       end
 
       message.source_stream_version = stream_position
+      message.source_global_position = global_position
 
       output_stream_name = stream_name stream_id
 
@@ -46,7 +48,7 @@ module DataAggregation::Accumulator
       next_version = preceding_version == :no_stream ? 0 : preceding_version.next
       cache.put stream_id, message, next_version
 
-      logger.info "Next message written (InputMessageType: #{input_message.message_type}, InputStreamPosition: #{stream_position}, OutputMessageType: #{message.message_type}, OutputStreamName: #{output_stream_name}, Version: #{next_version})"
+      logger.info "Next message written (InputMessageType: #{input_message.message_type}, InputStreamPosition: #{stream_position}, OutputMessageType: #{message.message_type}, OutputStreamName: #{output_stream_name}, Version: #{next_version}, GlobalPosition: #{global_position})"
 
       message
     end

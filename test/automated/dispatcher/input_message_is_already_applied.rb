@@ -1,9 +1,11 @@
 require_relative '../automated_init'
 
 context "Dispatcher Handles Input Message that Has Already Been Applied" do
+  input_message, input_event_data = Controls::Messages::Input::Initial.pair
+
   dispatcher = Controls::Dispatcher.example
 
-  dispatcher.dispatch Controls::Messages::Input::Initial.example
+  dispatcher.dispatch input_message, input_event_data
 
   test "Nothing is written to output stream" do
     refute dispatcher.writer do

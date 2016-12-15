@@ -9,9 +9,13 @@ module DataAggregation
         extend DispatcherClass
         extend OutputMessageMacro
         extend OutputCategoryMacro
+        extend PositionStoreClass
         extend ProjectionMacro
 
-        position_store PositionStore
+        const_set :Dispatcher, dispatcher_class
+        const_set :PositionStore, position_store_class
+
+        position_store position_store_class
       end
     end
 
@@ -34,8 +38,18 @@ module DataAggregation
     module OutputCategoryMacro
       def output_category_macro(category_name)
         dispatcher_class.category category_name
+
+        position_store_class.category category_name
       end
       alias_method :output_category, :output_category_macro
+    end
+
+    module PositionStoreClass
+      def position_store_class
+        @position_store_class ||= Class.new do
+          include PositionStore
+        end
+      end
     end
 
     module ProjectionMacro

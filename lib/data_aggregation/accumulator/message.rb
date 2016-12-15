@@ -4,7 +4,8 @@ module DataAggregation::Accumulator
       cls.class_exec do
         include EventStore::Messaging::Message
 
-        attribute :source_stream_version, default: -1
+        attribute :source_stream_version, Integer, default: -1
+        attribute :source_global_position, Integer
 
         virtual :advance
       end

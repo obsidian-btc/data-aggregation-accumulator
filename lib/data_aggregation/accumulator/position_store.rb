@@ -17,7 +17,6 @@ module DataAggregation::Accumulator
 
     def get
       reader.each do |event_data|
-        logger.info "-> #{event_data.position} (#{stream_name})"
         return event_data.position
       end
 

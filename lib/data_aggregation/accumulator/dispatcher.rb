@@ -14,6 +14,7 @@ module DataAggregation::Accumulator
         attr_writer :category_name
 
         dependency :cache, EntityCache
+        dependency :session, EventStore::Client::HTTP::Session
         dependency :writer, EventStore::Messaging::Writer
       end
     end
@@ -40,7 +41,7 @@ module DataAggregation::Accumulator
 
       output_stream_name = stream_name stream_id
 
-      projection = projection_class.build message, output_stream_name
+      projection = projection_class.build message, output_stream_name, session: session
       projection.apply input_message
 
       writer.write message, output_stream_name, expected_version: preceding_version
@@ -94,6 +95,7 @@ module DataAggregation::Accumulator
 
       EventStore::Client::HTTP::Reader.build(
         output_stream_name,
+        session: session,
         slice_size: 1,
         direction: :backward
       )
@@ -116,10 +118,13 @@ module DataAggregation::Accumulator
     end
 
     module Build
-      def build
+      def build(session: nil)
         instance = new
+
+        session = EventStore::Client::HTTP::Session.configure instance, session: session
+
         EntityCache.configure instance, projection_class, attr_name: :cache
-        EventStore::Messaging::Writer.configure instance
+        EventStore::Messaging::Writer.configure instance, session: session
         instance
       end
     end

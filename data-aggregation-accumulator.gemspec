@@ -20,6 +20,4 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency 'event_store-entity_projection'
   s.add_runtime_dependency 'event_store-consumer'
-
-  s.add_development_dependency 'fixtures-expect_message'
 end

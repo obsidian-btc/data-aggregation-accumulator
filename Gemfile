@@ -1,6 +1,8 @@
 source 'https://rubygems.org'
 
-gem 'evt-entity_cache', '~> 0.6.0'
+gemspec
+
+gem 'evt-entity_cache'
 
 source 'https://gem.fury.io/eventide' do
   gem 'event_store-entity_projection'
@@ -8,7 +10,7 @@ source 'https://gem.fury.io/eventide' do
 end
 
 source 'https://gem.fury.io/obsidian' do
-  gem 'fixtures-expect_message', :group => :development
+  gem 'fixtures-expect_message'
 end
 
 group :development do

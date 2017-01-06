@@ -5,6 +5,7 @@ module DataAggregation
 
       cls.class_exec do
         include EventStore::Consumer
+        include EventStore::Consumer::ErrorHandler
 
         extend DispatcherClass
         extend OutputMessageMacro

@@ -5,6 +5,8 @@ context "Dispatcher Writes Initial Message to Output Stream" do
 
   dispatcher = Controls::Dispatcher.example cache: false
 
+  write = SubstAttr::Substitute.(:write, dispatcher)
+
   output_message = dispatcher.dispatch input_message
 
   test "Initial output message is written" do
@@ -12,7 +14,7 @@ context "Dispatcher Writes Initial Message to Output Stream" do
   end
 
   test "Write is expected to initiate the stream" do
-    assert dispatcher.write do
+    assert write do
       written? do |_, _, expected_version|
         expected_version == :no_stream
       end

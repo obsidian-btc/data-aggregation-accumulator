@@ -2,7 +2,7 @@ module DataAggregation::Accumulator
   module Message
     def self.included(cls)
       cls.class_exec do
-        include EventStore::Messaging::Message
+        include Messaging::Message
 
         attribute :source_stream_version, Integer, default: -1
         attribute :source_global_position, Integer

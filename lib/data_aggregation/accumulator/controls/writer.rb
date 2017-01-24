@@ -7,9 +7,9 @@ module DataAggregation::Accumulator
           category ||= StreamName::Input::Category.example random: true
           stream_id ||= ID.example
 
-          stream_name = EventStore::Messaging::StreamName.stream_name stream_id, category
+          stream_name = Messaging::StreamName.stream_name stream_id, category
 
-          writer = EventStore::Messaging::Writer.build
+          write = Messaging::EventStore::Write.build
 
           (0..output_version).each do |i|
             batch = [
@@ -17,7 +17,7 @@ module DataAggregation::Accumulator
               Messages::Input.example(i)
             ]
 
-            writer.write batch, stream_name
+            write.(batch, stream_name)
           end
 
           stream_name
@@ -34,8 +34,8 @@ module DataAggregation::Accumulator
             Messages::Output.example event_version
           end
 
-          writer = EventStore::Messaging::Writer.build
-          writer.write_initial event_batch, stream_name
+          write = Messaging::EventStore::Write.build
+          write.initial event_batch, stream_name
 
           stream_name
         end

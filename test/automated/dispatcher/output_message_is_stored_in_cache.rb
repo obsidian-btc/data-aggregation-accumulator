@@ -1,11 +1,12 @@
 require_relative '../automated_init'
 
 context "Dispatcher Stores Output Message in Entity Cache" do
-  input_message, input_event_data = Controls::Messages::Input::Current.pair
+  input_message = Controls::Messages::Input::Current.example
 
   dispatcher = Controls::Dispatcher.example
+  SubstAttr::Substitute.(:write, dispatcher)
 
-  output_message = dispatcher.dispatch input_message, input_event_data
+  output_message = dispatcher.dispatch input_message
 
   test "ID of cache record matches that of stream" do
     assert dispatcher.cache do

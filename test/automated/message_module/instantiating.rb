@@ -4,7 +4,7 @@ context "Message is Instantiated" do
   message = Controls::Messages::Output::SomeMessage.new
 
   test "Instances are event store messages" do
-    assert message.is_a?(EventStore::Messaging::Message)
+    assert message.is_a?(Messaging::Message)
   end
 
   test "Advance method is implemented as a no-op" do

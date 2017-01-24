@@ -1,5 +1,5 @@
 require 'entity_cache'
-require 'event_store/consumer'
+require 'consumer/event_store'
 require 'event_store/consumer/error_handler'
 require 'entity_projection'
 require 'log'

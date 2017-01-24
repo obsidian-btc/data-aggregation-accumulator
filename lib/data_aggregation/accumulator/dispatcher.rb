@@ -2,7 +2,6 @@ module DataAggregation::Accumulator
   class Dispatcher
     include Log::Dependency
     include Messaging::StreamName
-    include EventStore::Consumer::Dispatcher
 
     configure :dispatcher
 
@@ -12,7 +11,7 @@ module DataAggregation::Accumulator
     dependency :session, EventSource::EventStore::HTTP::Session
     dependency :write, Messaging::EventStore::Write
 
-    def build(output_category, output_message_class, projection_class, session: nil)
+    def self.build(output_category, output_message_class, projection_class, session: nil)
       instance = new output_category, output_message_class, projection_class
 
       session = EventSource::EventStore::HTTP::Session.configure instance, session: session
@@ -22,8 +21,19 @@ module DataAggregation::Accumulator
       instance
     end
 
+    def call(event_data)
+      message = build_message event_data
+
+      dispatch message if message
+    end
+
     def build_message(event_data)
-      projection_class.build_message event_data
+      message_name = Messaging::Message::Info.canonize_name(event_data.type)
+      message_class = projection_class.message_registry.get(message_name)
+
+      return if message_class.nil?
+
+      Messaging::Message::Import.(event_data, message_class)
     end
 
     def dispatch(input_message, _=nil)
@@ -43,10 +53,9 @@ module DataAggregation::Accumulator
       message.source_stream_version = stream_position
       message.source_global_position = global_position
 
-      output_stream_name = stream_name stream_id
-
       projection_class.(message, input_message)
 
+      output_stream_name = stream_name stream_id, output_category
       write.(message, output_stream_name, expected_version: preceding_version)
 
       next_version = preceding_version == :no_stream ? 0 : preceding_version.next
@@ -70,7 +79,7 @@ module DataAggregation::Accumulator
         return preceding_message, preceding_version
       end
 
-      output_stream_name = stream_name stream_id
+      output_stream_name = stream_name stream_id, output_category
 
       get = EventSource::EventStore::HTTP::Get.build(
         session: session,

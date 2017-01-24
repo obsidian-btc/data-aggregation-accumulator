@@ -1,17 +1,17 @@
 require_relative '../automated_init'
 
 context "Accumulator Module Output Category Macro" do
-  accumulator_class = Class.new do
-    include DataAggregation::Accumulator
+  accumulator = Controls::Accumulator.example
 
-    output_category :some_category
+  test "Category is set on position store" do
+    position_store = accumulator.position_store
+
+    assert position_store.output_category == Controls::StreamName::Output::Category.example
   end
 
-  test "Dispatcher is configured to use specified category" do
-    dispatcher = accumulator_class.dispatcher_class.new
+  test "Category is set on dispatcher" do
+    dispatcher = accumulator.dispatcher
 
-    assert dispatcher do
-      category == 'someCategory'
-    end
+    assert dispatcher.output_category == Controls::StreamName::Output::Category.example
   end
 end

@@ -5,10 +5,12 @@ context "Dispatcher Handles Input Message that Has Already Been Applied" do
 
   dispatcher = Controls::Dispatcher.example
 
+  write = SubstAttr::Substitute.(:write, dispatcher)
+
   dispatcher.dispatch input_message
 
   test "Nothing is written to output stream" do
-    refute dispatcher.write do
+    refute write do
       written?
     end
   end

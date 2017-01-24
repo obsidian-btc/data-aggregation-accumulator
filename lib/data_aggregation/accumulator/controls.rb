@@ -1,4 +1,4 @@
-require 'event_store/messaging/controls'
+require 'messaging/event_store/controls'
 require 'identifier/uuid/controls'
 
 require 'data_aggregation/accumulator/controls/id'

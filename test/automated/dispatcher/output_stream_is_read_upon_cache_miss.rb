@@ -5,9 +5,10 @@ context "Dispatcher Reads Preceding Output Message from Stream (Cache Miss)" do
 
   output_stream_name = Controls::Writer::Output.write
 
-  category = EventStore::Messaging::StreamName.get_category output_stream_name
+  category = Messaging::StreamName.get_category output_stream_name
 
   dispatcher = Controls::Dispatcher.example category, cache: false
+  write = SubstAttr::Substitute.(:write, dispatcher)
 
   output_message = dispatcher.dispatch input_message
 
@@ -16,7 +17,7 @@ context "Dispatcher Reads Preceding Output Message from Stream (Cache Miss)" do
   end
 
   test "Expected version is set that of output stream" do
-    assert dispatcher.write do
+    assert write do
       written? do |_, _, expected_version|
         expected_version == Controls::Version::Output::Preceding.example
       end

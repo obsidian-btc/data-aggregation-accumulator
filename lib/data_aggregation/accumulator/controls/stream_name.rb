@@ -4,7 +4,7 @@ module DataAggregation::Accumulator
       def self.get(category, stream_id=nil)
         stream_id ||= Controls::ID.example
 
-        EventStore::Messaging::StreamName.stream_name stream_id, category
+        Messaging::StreamName.stream_name stream_id, category
       end
 
       def self.category(category, random: nil)
@@ -28,7 +28,7 @@ module DataAggregation::Accumulator
           def self.event_store
             category = self.example
 
-            EventStore::Messaging::StreamName.category_stream_name category
+            EventSource::EventStore::HTTP::StreamName.canonize category
           end
         end
       end

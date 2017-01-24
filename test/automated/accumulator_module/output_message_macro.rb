@@ -1,15 +1,11 @@
 require_relative '../automated_init'
 
 context "Accumulator Module Output Message Macro" do
-  accumulator_class = Class.new do
-    include DataAggregation::Accumulator
+  accumulator = Controls::Accumulator.example
 
-    output_message Controls::Messages::Output::SomeMessage
-  end
+  test "Message class is set on dispatcher" do
+    dispatcher = accumulator.dispatcher
 
-  test "Dispatcher is configured to use specified output message class" do
-    assert accumulator_class.dispatcher_class do
-      output_message_class == Controls::Messages::Output::SomeMessage
-    end
+    assert dispatcher.output_message_class == Controls::Messages::Output::SomeMessage
   end
 end

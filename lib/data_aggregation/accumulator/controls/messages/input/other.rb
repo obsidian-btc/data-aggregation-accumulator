@@ -37,7 +37,7 @@ module DataAggregation::Accumulator
           end
 
           class OtherInputMessage
-            include EventStore::Messaging::Message
+            include Messaging::Message
           end
         end
       end

@@ -4,6 +4,7 @@ context "Dispatcher Writes Output Message" do
   input_message, input_event_data = Controls::Messages::Input::Current.pair
 
   dispatcher = Controls::Dispatcher.example
+  SubstAttr::Substitute.(:write, dispatcher)
 
   dispatcher.dispatch input_message, input_event_data
 

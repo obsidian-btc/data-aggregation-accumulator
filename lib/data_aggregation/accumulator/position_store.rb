@@ -9,7 +9,7 @@ module DataAggregation::Accumulator
         include OutputCategory
 
         include Consumer::PositionStore
-        include EventStore::Messaging::StreamName
+        include Messaging::StreamName
 
         dependency :get_last, EventSource::EventStore::HTTP::Get
       end

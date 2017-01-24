@@ -4,7 +4,7 @@ module DataAggregation
       return if cls == Object
 
       cls.class_exec do
-        include EventStore::Consumer
+        include Consumer::EventStore
         include EventStore::Consumer::ErrorHandler
 
         include Configure
@@ -17,13 +17,16 @@ module DataAggregation
 
         const_set :PositionStore, specialized_position_store_class
 
+        dependency :dispatcher, Dispatcher
+
         position_store specialized_position_store_class
       end
     end
 
     module Configure
       def configure(session: nil, **)
-        dispatcher = self.class.dispatcher_class.build(
+        dispatcher = Dispatcher.configure(
+          self,
           output_category,
           output_message_class,
           projection_class,
@@ -47,7 +50,9 @@ module DataAggregation
 
     module OutputCategoryMacro
       def output_category_macro(category_name)
-        define_method :ouput_category do
+        category_name = Casing::Camel.(category_name.to_s)
+
+        define_method :output_category do
           category_name
         end
 

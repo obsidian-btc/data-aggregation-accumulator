@@ -82,7 +82,7 @@ module DataAggregation::Accumulator
         end
 
         class SomeInputMessage
-          include EventStore::Messaging::Message
+          include ::Messaging::Message
 
           attribute :number, Integer
         end

@@ -1,15 +1,11 @@
 require_relative '../automated_init'
 
 context "Accumulator Module Projection Macro" do
-  accumulator_class = Class.new do
-    include DataAggregation::Accumulator
+  accumulator = Controls::Accumulator.example
 
-    projection Controls::Projection::Example
-  end
+  dispatcher = accumulator.dispatcher
 
   test "Dispatcher is configured to use specified projection" do
-    assert accumulator_class.dispatcher_class do
-      projection_class == Controls::Projection::Example
-    end
+    assert dispatcher.projection_class == Controls::Projection::Example
   end
 end

@@ -1,6 +1,12 @@
 module DataAggregation::Accumulator
   module Controls
     module Accumulator
+      def self.example
+        stream_name = StreamName::Input.example
+
+        Example.build stream_name
+      end
+
       class Example
         include DataAggregation::Accumulator
 

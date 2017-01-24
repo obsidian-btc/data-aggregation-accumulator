@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 Gem::Specification.new do |s|
   s.name = 'data_aggregation-accumulator'
-  s.version = '0.1.1.3'
+  s.version = '0.2.0.0'
   s.summary = 'Data aggregation accumulator library'
   s.description = ' '
 

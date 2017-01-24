@@ -9,13 +9,12 @@ module DataAggregation
 
         include Configure
 
-        extend DispatcherClass
         extend OutputMessageMacro
         extend OutputCategoryMacro
-        extend SpecializedPositionStoreClass
         extend ProjectionMacro
 
-        const_set :Dispatcher, dispatcher_class
+        extend SpecializedPositionStoreClass
+
         const_set :PositionStore, specialized_position_store_class
 
         position_store specialized_position_store_class
@@ -23,35 +22,47 @@ module DataAggregation
     end
 
     module Configure
-      def configure(**)
-        dispatcher = self.class.dispatcher_class.build
+      def configure(session: nil, **)
+        dispatcher = self.class.dispatcher_class.build(
+          output_category,
+          output_message_class,
+          projection_class,
+          session: session
+        )
+
         self.class.handler_registry.register dispatcher
+
         super
       end
     end
 
-    module DispatcherClass
-      def dispatcher_class
-        @dispatcher_class ||= Class.new do
-          include Dispatcher
-        end
-      end
-      alias_method :messaging_dispatcher_class, :dispatcher_class
-    end
-
     module OutputMessageMacro
       def output_message_macro(output_message_class)
-        dispatcher_class.output_message_macro output_message_class
+        define_method :output_message_class do
+          output_message_class
+        end
       end
       alias_method :output_message, :output_message_macro
     end
 
     module OutputCategoryMacro
       def output_category_macro(category_name)
-        dispatcher_class.category category_name
+        define_method :ouput_category do
+          category_name
+        end
+
         specialized_position_store_class.output_category = category_name
       end
       alias_method :output_category, :output_category_macro
+    end
+
+    module ProjectionMacro
+      def projection_macro(projection_class)
+        define_method :projection_class do
+          projection_class
+        end
+      end
+      alias_method :projection, :projection_macro
     end
 
     module SpecializedPositionStoreClass
@@ -60,13 +71,6 @@ module DataAggregation
           include PositionStore
         end
       end
-    end
-
-    module ProjectionMacro
-      def projection_macro(projection_class)
-        dispatcher_class.projection_macro projection_class
-      end
-      alias_method :projection, :projection_macro
     end
   end
 end

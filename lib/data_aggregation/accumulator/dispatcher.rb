@@ -1,24 +1,25 @@
 module DataAggregation::Accumulator
-  module Dispatcher
-    def self.included(cls)
-      cls.class_exec do
-        include Messaging::StreamName
-        include Log::Dependency
+  class Dispatcher
+    include Log::Dependency
+    include Messaging::StreamName
+    include EventStore::Consumer::Dispatcher
 
-        include EventStore::Consumer::Dispatcher
+    configure :dispatcher
 
-        extend Build
-        extend ProjectionMacro
-        extend OutputMessageMacro
+    initializer :output_category, :output_message_class, :projection_class
 
-        configure :dispatcher
+    dependency :cache, EntityCache
+    dependency :session, EventSource::EventStore::HTTP::Session
+    dependency :write, Messaging::EventStore::Write
 
-        attr_writer :category
+    def build(output_category, output_message_class, projection_class, session: nil)
+      instance = new output_category, output_message_class, projection_class
 
-        dependency :cache, EntityCache
-        dependency :session, EventSource::EventStore::HTTP::Session
-        dependency :write, Messaging::EventStore::Write
-      end
+      session = EventSource::EventStore::HTTP::Session.configure instance, session: session
+
+      EntityCache.configure instance, projection_class, attr_name: :cache
+      Messaging::EventStore::Write.configure instance, session: session
+      instance
     end
 
     def build_message(event_data)
@@ -98,44 +99,6 @@ module DataAggregation::Accumulator
         event_data,
         output_message_class
       )
-    end
-
-    module Build
-      def build(session: nil)
-        instance = new
-
-        session = EventSource::EventStore::HTTP::Session.configure instance, session: session
-
-        EntityCache.configure instance, projection_class, attr_name: :cache
-        Messaging::EventStore::Write.configure instance, session: session
-        instance
-      end
-    end
-
-    module ProjectionMacro
-      def projection_macro(projection_class)
-        define_singleton_method :projection_class do
-          projection_class
-        end
-
-        define_method :projection_class do
-          self.class.projection_class
-        end
-      end
-      alias_method :projection, :projection_macro
-    end
-
-    module OutputMessageMacro
-      def output_message_macro(output_message_class)
-        define_singleton_method :output_message_class do
-          output_message_class
-        end
-
-        define_method :output_message_class do
-          self.class.output_message_class
-        end
-      end
-      alias_method :output_message, :output_message_macro
     end
   end
 end

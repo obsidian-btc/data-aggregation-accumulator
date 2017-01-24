@@ -10,7 +10,7 @@ context "Dispatcher Category Macro" do
   dispatcher = dispatcher_class.new
 
   context "Category name is queried" do
-    category_name = dispatcher.category_name
+    category_name = dispatcher.category
 
     test "Specified category is returned" do
       assert category_name == 'someCategory'

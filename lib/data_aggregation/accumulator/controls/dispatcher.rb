@@ -7,9 +7,9 @@ module DataAggregation::Accumulator
         dispatcher = Example.build
 
         SubstAttr::Substitute.(:cache, dispatcher)
-        SubstAttr::Substitute.(:writer, dispatcher)
+        SubstAttr::Substitute.(:write, dispatcher)
 
-        dispatcher.category_name = category if category
+        dispatcher.category = category if category
 
         Cache.configure dispatcher if cache
 

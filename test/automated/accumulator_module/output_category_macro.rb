@@ -11,17 +11,7 @@ context "Accumulator Module Output Category Macro" do
     dispatcher = accumulator_class.dispatcher_class.new
 
     assert dispatcher do
-      category_name == 'someCategory'
-    end
-  end
-
-  test "Position store is configured to use specified category" do
-    stream_name = Controls::StreamName::Input.example
-
-    position_store = accumulator_class.position_store_class.new stream_name
-
-    assert position_store do
-      category_name == 'someCategory'
+      category == 'someCategory'
     end
   end
 end

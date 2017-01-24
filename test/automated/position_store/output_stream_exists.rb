@@ -7,7 +7,7 @@ context "Position Store, Output Stream Exists" do
   output_category = EventStore::Messaging::StreamName.get_category output_stream_name
 
   position_store = Controls::PositionStore::Example.new input_stream_name
-  position_store.category_name = output_category
+  position_store.output_category = output_category
   position_store.configure
 
   context "Get position" do

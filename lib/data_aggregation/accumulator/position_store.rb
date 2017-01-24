@@ -6,40 +6,54 @@ module DataAggregation::Accumulator
         prepend Get
         prepend Put
 
-        include EventStore::Consumer::PositionStore
+        include OutputCategory
+
+        include Consumer::PositionStore
         include EventStore::Messaging::StreamName
 
-        attr_writer :category_name
-
-        dependency :reader, EventStore::Client::HTTP::Reader
+        dependency :get_last, EventSource::EventStore::HTTP::Get
       end
     end
 
     module Configure
       def configure
-        EventStore::Client::HTTP::Reader.configure(
+        EventSource::EventStore::HTTP::Get.configure(
           self,
-          category_stream_name,
-          direction: :backward,
-          slice_size: 1
+          precedence: :desc,
+          batch_size: 1,
+          attr_name: :get_last
         )
       end
     end
 
     module Get
       def get
-        reader.each do |event_data|
-          global_position = event_data.data.fetch :source_global_position
+        output_category_stream_name = EventSource::EventStore::HTTP::StreamName.canonize output_category
 
-          return global_position
-        end
+        event_data, * = get_last.(output_category_stream_name)
 
-        :no_stream
+        return nil if event_data.nil?
+
+        event_data.data.fetch :source_global_position
       end
     end
 
     module Put
       def put(_)
+      end
+    end
+
+    module OutputCategory
+      def self.included(cls)
+        cls.singleton_class.class_exec do
+          attr_accessor :output_category
+        end
+      end
+
+      attr_writer :output_category
+
+      def output_category
+        @output_category ||= self.class.output_category
       end
     end
   end

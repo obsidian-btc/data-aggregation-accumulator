@@ -2,10 +2,14 @@ module DataAggregation::Accumulator
   module Controls
     module Messages
       module Input
-        def self.example(i=nil, source_event_uri: nil)
+        def self.example(i=nil)
           message = SomeInputMessage.new
           message.number = Number.example i
-          message.metadata.source_event_uri = SourceEventURI.example i
+
+          message.metadata.source_event_stream_name = StreamName::Input.example
+          message.metadata.source_event_position = StreamPosition.example i
+          message.metadata.global_position = GlobalPosition.example i
+
           message
         end
 

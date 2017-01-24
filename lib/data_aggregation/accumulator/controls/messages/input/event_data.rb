@@ -8,13 +8,14 @@ module DataAggregation::Accumulator
             number = Number.example i
             position = GlobalPosition.example i
 
-            EventStore::Client::HTTP::Controls::EventData::Read.example(
-              number,
+            event_data = ::EventSource::Controls::EventData::Read.example(
               type: type,
               data: { :number => number },
-              position: position,
               metadata: false
             )
+            event_data.position = number
+            event_data.global_position = position
+            event_data
           end
 
           module Type

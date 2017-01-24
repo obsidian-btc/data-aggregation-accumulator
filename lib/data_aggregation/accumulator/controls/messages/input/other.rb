@@ -3,11 +3,10 @@ module DataAggregation::Accumulator
     module Messages
       module Input
         module Other
-          def self.example(i=nil, source_event_uri: nil)
-            source_event_uri ||= SourceEventURI.example i
-
+          def self.example(i=nil)
             message = OtherInputMessage.new
-            message.metadata.source_event_uri = source_event_uri
+            message.metadata.source_event_stream_name = StreamName::Input.example
+            message.metadata.source_event_position = StreamPosition.example i
             message
           end
 
@@ -15,7 +14,7 @@ module DataAggregation::Accumulator
             def self.example
               type = Type.example
 
-              EventStore::Client::HTTP::Controls::EventData::Read.example(
+              EventSource::Controls::EventData::Read.example(
                 type: type,
                 data: {},
                 metadata: false
@@ -27,14 +26,6 @@ module DataAggregation::Accumulator
                 i ||= 0
 
                 i * 2
-              end
-            end
-
-            module SourceEventURI
-              def self.example(i=nil)
-                stream_position = StreamPosition.example i
-
-                Input::SourceEventURI.example stream_position: stream_position
               end
             end
 

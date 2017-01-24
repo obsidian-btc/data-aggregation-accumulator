@@ -2,7 +2,7 @@ module DataAggregation::Accumulator
   module Dispatcher
     def self.included(cls)
       cls.class_exec do
-        include EventStore::Messaging::StreamName
+        include Messaging::StreamName
         include Log::Dependency
 
         extend Build
@@ -11,11 +11,11 @@ module DataAggregation::Accumulator
 
         configure :dispatcher
 
-        attr_writer :category_name
+        attr_writer :category
 
         dependency :cache, EntityCache
-        dependency :session, EventStore::Client::HTTP::Session
-        dependency :writer, EventStore::Messaging::Writer
+        dependency :session, EventSource::EventStore::HTTP::Session
+        dependency :write, Messaging::EventStore::Write
       end
     end
 
@@ -23,11 +23,12 @@ module DataAggregation::Accumulator
       projection_class.build_message event_data
     end
 
-    def dispatch(input_message, event_data)
+    def dispatch(input_message, _=nil)
       logger.trace "Dispatching input message (InputMessageType: #{input_message.message_type})"
 
-      stream_id, stream_position = parse_source_event_uri input_message.metadata
-      global_position = event_data.position
+      stream_id = Messaging::StreamName.get_id input_message.metadata.source_event_stream_name
+      stream_position = input_message.metadata.position
+      global_position = input_message.metadata.global_position
 
       message, preceding_version = get_preceding_message stream_id
 
@@ -44,7 +45,7 @@ module DataAggregation::Accumulator
       projection = projection_class.build message, output_stream_name, session: session
       projection.apply input_message
 
-      writer.write message, output_stream_name, expected_version: preceding_version
+      write.(message, output_stream_name, expected_version: preceding_version)
 
       next_version = preceding_version == :no_stream ? 0 : preceding_version.next
       cache.put stream_id, message, next_version
@@ -67,12 +68,19 @@ module DataAggregation::Accumulator
         return preceding_message, preceding_version
       end
 
-      reader = build_reader stream_id
+      output_stream_name = stream_name stream_id
 
-      reader.each do |event_data|
+      get = EventSource::EventStore::HTTP::Get.build(
+        session: session,
+        batch_size: 1,
+        precedence: :desc
+      )
+
+      event_data, * = get.(output_stream_name)
+
+      unless event_data.nil?
         preceding_message = build_output_message event_data
-        preceding_version = event_data.number
-        break
+        preceding_version = event_data.position
       end
 
       preceding_version ||= :no_stream
@@ -84,47 +92,20 @@ module DataAggregation::Accumulator
     end
 
     def build_output_message(event_data)
-      EventStore::Messaging::Message::Import::EventData.(
+      Messaging::Message::Import.(
         event_data,
         output_message_class
       )
-    end
-
-    def build_reader(stream_id)
-      output_stream_name = stream_name stream_id
-
-      EventStore::Client::HTTP::Reader.build(
-        output_stream_name,
-        session: session,
-        slice_size: 1,
-        direction: :backward
-      )
-    end
-
-    def parse_source_event_uri(metadata)
-      logger.trace "Parsing source event URI (SourceEventURI: #{metadata.source_event_uri.inspect})"
-
-      source_event_uri = URI.parse metadata.source_event_uri
-
-      *, stream_name, stream_position = source_event_uri.path.split '/'
-
-      stream_position = stream_position.to_i
-
-      stream_id = EventStore::Messaging::StreamName.get_id stream_name
-
-      logger.debug "Parsed source event URI (SourceEventURI: #{metadata.source_event_uri.inspect}, StreamID: #{stream_id.inspect}, StreamPosition: #{stream_position})"
-
-      return stream_id, stream_position
     end
 
     module Build
       def build(session: nil)
         instance = new
 
-        session = EventStore::Client::HTTP::Session.configure instance, session: session
+        session = EventSource::EventStore::HTTP::Session.configure instance, session: session
 
         EntityCache.configure instance, projection_class, attr_name: :cache
-        EventStore::Messaging::Writer.configure instance, session: session
+        Messaging::EventStore::Write.configure instance, session: session
         instance
       end
     end

@@ -7,6 +7,8 @@ module DataAggregation
         include EventStore::Consumer
         include EventStore::Consumer::ErrorHandler
 
+        include Configure
+
         extend DispatcherClass
         extend OutputMessageMacro
         extend OutputCategoryMacro
@@ -17,6 +19,14 @@ module DataAggregation
         const_set :PositionStore, specialized_position_store_class
 
         position_store specialized_position_store_class
+      end
+    end
+
+    module Configure
+      def configure(**)
+        dispatcher = self.class.dispatcher_class.build
+        self.class.handler_registry.register dispatcher
+        super
       end
     end
 

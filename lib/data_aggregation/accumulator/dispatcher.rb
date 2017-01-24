@@ -5,6 +5,8 @@ module DataAggregation::Accumulator
         include Messaging::StreamName
         include Log::Dependency
 
+        include EventStore::Consumer::Dispatcher
+
         extend Build
         extend ProjectionMacro
         extend OutputMessageMacro

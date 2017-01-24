@@ -20,5 +20,7 @@ expect_message = Fixtures::ExpectMessage.build output_stream_name
 
   expect_message.(['SomeMessage']) do |data|
     data[:result] == expected_result
+
+    Log.get(__FILE__).info "Verified event (Counter: #{i})"
   end
 end

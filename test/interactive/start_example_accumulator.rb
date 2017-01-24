@@ -1,5 +1,7 @@
 require_relative './interactive_init'
 
-Actor::Supervisor.run do
-  Controls::Accumulator::Example.start
+Actor::Supervisor.start do
+  category = Controls::StreamName::Input::Category.example
+
+  Controls::Accumulator::Example.start category
 end

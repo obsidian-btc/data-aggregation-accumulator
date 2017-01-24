@@ -2,7 +2,7 @@ module DataAggregation::Accumulator
   module Projection
     def self.included(cls)
       cls.class_exec do
-        include EventStore::EntityProjection
+        include EntityProjection
       end
     end
 

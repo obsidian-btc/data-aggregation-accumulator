@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency 'evt-entity_cache', '~> 0.6.0'
 
-  s.add_runtime_dependency 'event_store-entity_projection'
+  s.add_runtime_dependency 'evt-entity_projection'
   s.add_runtime_dependency 'event_store-consumer', '>= 0.4.0.0.pre2'
   s.add_runtime_dependency 'event_store-consumer-error_handler', '>= 0.3.0.0.pre1'
 end

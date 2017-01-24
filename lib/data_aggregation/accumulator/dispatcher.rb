@@ -45,8 +45,7 @@ module DataAggregation::Accumulator
 
       output_stream_name = stream_name stream_id
 
-      projection = projection_class.build message, output_stream_name, session: session
-      projection.apply input_message
+      projection_class.(message, input_message)
 
       write.(message, output_stream_name, expected_version: preceding_version)
 

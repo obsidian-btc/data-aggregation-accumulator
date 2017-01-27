@@ -18,8 +18,6 @@ module DataAggregation
         const_set :PositionStore, specialized_position_store_class
 
         dependency :dispatcher, Dispatcher
-
-        position_store specialized_position_store_class
       end
     end
 
@@ -34,6 +32,8 @@ module DataAggregation
         )
 
         self.class.handler_registry.register dispatcher
+
+        self.class.specialized_position_store_class.configure self
 
         super
       end

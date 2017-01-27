@@ -12,5 +12,5 @@ require 'data_aggregation/accumulator/controls/stream_name'
 require 'data_aggregation/accumulator/controls/version'
 require 'data_aggregation/accumulator/controls/writer'
 
-require 'data_aggregation/accumulator/controls/dispatcher'
+require 'data_aggregation/accumulator/controls/accumulate'
 require 'data_aggregation/accumulator/controls/accumulator'

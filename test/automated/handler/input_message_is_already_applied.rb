@@ -1,13 +1,13 @@
 require_relative '../automated_init'
 
-context "Dispatcher Handles Input Message that Has Already Been Applied" do
+context "Accumulate Handles Input Message that Has Already Been Applied" do
   input_message = Controls::Messages::Input::Initial.example
 
-  dispatcher = Controls::Dispatcher.example
+  accumulate = Controls::Accumulate.example
 
-  write = SubstAttr::Substitute.(:write, dispatcher)
+  write = SubstAttr::Substitute.(:write, accumulate)
 
-  dispatcher.dispatch input_message
+  accumulate.accumulate input_message
 
   test "Nothing is written to output stream" do
     refute write do
@@ -16,7 +16,7 @@ context "Dispatcher Handles Input Message that Has Already Been Applied" do
   end
 
   test "Nothing is stored in cache" do
-    refute dispatcher.cache do
+    refute accumulate.cache do
       put?
     end
   end

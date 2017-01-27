@@ -1,9 +1,9 @@
 module DataAggregation::Accumulator
-  class Dispatcher
+  class Accumulate
     include Log::Dependency
     include Messaging::StreamName
 
-    configure :dispatcher
+    configure :accumulate
 
     initializer :output_category, :output_message_class, :projection_class
 
@@ -24,7 +24,7 @@ module DataAggregation::Accumulator
     def call(event_data)
       message = build_message event_data
 
-      dispatch message if message
+      accumulate message if message
     end
 
     def build_message(event_data)
@@ -36,8 +36,8 @@ module DataAggregation::Accumulator
       Messaging::Message::Import.(event_data, message_class)
     end
 
-    def dispatch(input_message, _=nil)
-      logger.trace "Dispatching input message (InputMessageType: #{input_message.message_type})"
+    def accumulate(input_message, _=nil)
+      logger.trace "Accumulating input message (InputMessageType: #{input_message.message_type})"
 
       stream_id = Messaging::StreamName.get_id input_message.metadata.source_event_stream_name
       stream_position = input_message.metadata.position
@@ -81,11 +81,7 @@ module DataAggregation::Accumulator
 
       output_stream_name = stream_name stream_id, output_category
 
-      get = EventSource::EventStore::HTTP::Get.build(
-        session: session,
-        batch_size: 1,
-        precedence: :desc
-      )
+      get = EventSource::EventStore::HTTP::Get::Last.build session: session
 
       event_data, * = get.(output_stream_name)
 

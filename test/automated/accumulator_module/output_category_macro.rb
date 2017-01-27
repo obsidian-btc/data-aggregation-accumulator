@@ -9,9 +9,9 @@ context "Accumulator Module Output Category Macro" do
     assert position_store.output_category == Controls::StreamName::Output::Category.example
   end
 
-  test "Category is set on dispatcher" do
-    dispatcher = accumulator.dispatcher
+  test "Category is set on accumulate" do
+    accumulate = accumulator.accumulate
 
-    assert dispatcher.output_category == Controls::StreamName::Output::Category.example
+    assert accumulate.output_category == Controls::StreamName::Output::Category.example
   end
 end

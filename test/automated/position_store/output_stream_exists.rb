@@ -6,7 +6,7 @@ context "Position Store, Output Stream Exists" do
   output_stream_name = Controls::Writer::Output.write version: 1
   output_category = Messaging::StreamName.get_category output_stream_name
 
-  position_store = Controls::PositionStore::Example.new input_stream_name
+  position_store = Controls::PositionStore::Example.new
   position_store.output_category = output_category
   position_store.configure
 

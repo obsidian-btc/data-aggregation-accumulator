@@ -11,18 +11,13 @@ module DataAggregation::Accumulator
         include Consumer::PositionStore
         include Messaging::StreamName
 
-        dependency :get_last, EventSource::EventStore::HTTP::Get
+        dependency :get_last, EventSource::EventStore::HTTP::Get::Last
       end
     end
 
     module Configure
       def configure
-        EventSource::EventStore::HTTP::Get.configure(
-          self,
-          precedence: :desc,
-          batch_size: 1,
-          attr_name: :get_last
-        )
+        EventSource::EventStore::HTTP::Get::Last.configure self
       end
     end
 

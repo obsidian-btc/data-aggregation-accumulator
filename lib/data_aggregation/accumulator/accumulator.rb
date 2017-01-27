@@ -17,15 +17,17 @@ module DataAggregation
 
         const_set :PositionStore, specialized_position_store_class
 
-        dependency :dispatcher, Dispatcher
+        dependency :accumulate, Accumulate
 
-        position_store specialized_position_store_class
+        handle do |event_data|
+          accumulate.(event_data)
+        end
       end
     end
 
     module Configure
       def configure(session: nil, **)
-        dispatcher = Dispatcher.configure(
+        Accumulate.configure(
           self,
           output_category,
           output_message_class,
@@ -33,7 +35,7 @@ module DataAggregation
           session: session
         )
 
-        self.class.handler_registry.register dispatcher
+        self.class.specialized_position_store_class.configure self
 
         super
       end

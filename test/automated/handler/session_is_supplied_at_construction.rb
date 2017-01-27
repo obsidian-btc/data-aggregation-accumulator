@@ -1,12 +1,12 @@
 require_relative '../automated_init'
 
-context "Dispatcher, Session Is Supplied At Construction" do
+context "Accumulate, Session Is Supplied At Construction" do
   session = EventSource::EventStore::HTTP::Session.build
 
-  dispatcher = Controls::Dispatcher.example session: session
+  accumulate = Controls::Accumulate.example session: session
 
   test "Session is supplied to event writer" do
-    assert dispatcher.write.event_writer do |write|
+    assert accumulate.write.event_writer do |write|
       session?(session)
     end
   end

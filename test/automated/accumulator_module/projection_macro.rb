@@ -3,9 +3,9 @@ require_relative '../automated_init'
 context "Accumulator Module Projection Macro" do
   accumulator = Controls::Accumulator.example
 
-  dispatcher = accumulator.dispatcher
+  accumulate = accumulator.accumulate
 
-  test "Dispatcher is configured to use specified projection" do
-    assert dispatcher.projection_class == Controls::Projection::Example
+  test "Accumulate is configured to use specified projection" do
+    assert accumulate.projection_class == Controls::Projection::Example
   end
 end

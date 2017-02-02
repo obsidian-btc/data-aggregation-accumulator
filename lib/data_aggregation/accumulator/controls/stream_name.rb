@@ -28,7 +28,7 @@ module DataAggregation::Accumulator
           def self.event_store
             category = self.example
 
-            EventSource::EventStore::HTTP::StreamName.canonize category
+            "$ce-#{category}"
           end
         end
       end

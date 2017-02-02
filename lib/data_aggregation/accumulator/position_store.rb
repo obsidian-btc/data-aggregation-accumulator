@@ -23,7 +23,7 @@ module DataAggregation::Accumulator
 
     module Get
       def get
-        output_category_stream_name = EventSource::EventStore::HTTP::StreamName.canonize output_category
+        output_category_stream_name = "$ce-#{output_category}"
 
         event_data, * = get_last.(output_category_stream_name)
 

@@ -1,7 +1,7 @@
 require_relative '../automated_init'
 
 context "Accumulator Module Build Method" do
-  category = Controls::StreamName::Input::Category.example
+  category = Controls::StreamName::Input::Category.event_store
   accumulator = Controls::Accumulator::Example.build category
 
   test "Position store is configured" do

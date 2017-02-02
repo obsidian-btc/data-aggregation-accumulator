@@ -4,7 +4,7 @@ module DataAggregation
       return if cls == Object
 
       cls.class_exec do
-        include Consumer::EventStore
+        include Consumer
         include EventStore::Consumer::ErrorHandler
 
         include Configure
@@ -19,7 +19,7 @@ module DataAggregation
 
         dependency :accumulate, Accumulate
 
-        handle do |event_data|
+        handler do |event_data|
           accumulate.(event_data)
         end
       end
@@ -37,7 +37,11 @@ module DataAggregation
 
         self.class.specialized_position_store_class.configure self
 
-        super
+        unless session.nil?
+          get_session = Consumer::EventStore::CopySession.(session)
+        end
+
+        EventSource::EventStore::HTTP::Get.configure self, session: get_session
       end
     end
 
